@@ -17,8 +17,7 @@ var inicializarControllerKnockout = function (config) {
     controller.nomeController = config.nomeController;
     controller.ClasseViewModel = config.ClasseViewModel;
     controller.dadosDto = undefined;
-    var viewModelLista;
-    
+
     var vmKO = config.viewMoldel;
 
     // ///////////////////////////////////////////////////
@@ -166,12 +165,14 @@ var inicializarControllerKnockout = function (config) {
     // Os dados já vieram preenchidos
     if (!_.isUndefined(config.dadosDto)) {
         controller.dadosDto = config.dadosDto;
+        carregarDados(controller);
     }
     else {
         chamarAjax({
             nomeController: controller.nomeController,
             callback_done: function (data) {
                 controller.dadosDto = data;
+                carregarDados(controller);
                 if (!_.isUndefined(controller.ajax_done)) {
                     controller.ajax_done(data);
                 }
@@ -186,18 +187,22 @@ var inicializarControllerKnockout = function (config) {
         });
     }
 
+    return controller;
+};
+
+var carregarDados = function (controller) {
     // cria viewModel para cada Dto
-    viewModelLista = _.map(controller.dadosDto, function (itemDto) {
+    var viewModelLista = _.map(controller.dadosDto, function (itemDto) {
         return new controller.ClasseViewModel(itemDto);
     });
 
-    // [GET] 
+    var vmKO = controller.VmKO;
+
+    // [GET]
     vmKO.lista = ko.observableArray(viewModelLista);
 
     // item selecionado, inicia com o primeiro
     vmKO.selecionado = ko.observable(viewModelLista[0]);
 
     vmKO.jsonItem = ko.toJSON(vmKO.selecionado);
-
-    return controller;
 };
