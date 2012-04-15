@@ -17,7 +17,7 @@ var ajaxRest = function (options) {
 
     // padrão
     self.settings = {};
-    self.settings.nomeController = "";
+    self.settings.controllerName = "";
     self.settings.metodo = METHOD.LIST;
     self.settings.id = undefined;
     self.settings.dados = undefined;
@@ -26,8 +26,8 @@ var ajaxRest = function (options) {
     self.settings.assincrono = true;
 
     //self.settings = ajaxRestSettings;
-    if (!_.isUndefined(options.nomeController)) {
-        self.settings.nomeController = options.nomeController;
+    if (!_.isUndefined(options.controllerName)) {
+        self.settings.controllerName = options.controllerName;
     }
     if (!_.isUndefined(options.metodo)) {
         self.settings.metodo = options.metodo;
@@ -51,7 +51,7 @@ var ajaxRest = function (options) {
     self.callAjax = function () {
         // prepara URL
         var uri;
-        uri = self.settings.metodo.url.replace(/__controller__/, self.settings.nomeController);
+        uri = self.settings.metodo.url.replace(/__controller__/, self.settings.controllerName);
         if (!_.isUndefined(self.settings.id)) {
             uri = uri.replace(/__id__/, self.settings.id);
         }

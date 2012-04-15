@@ -4,12 +4,12 @@
 var PizzaVM = function (pizza) {
     var self = this;
     self.Id = ko.observable(0);
-    self.Nome = ko.observable("");
+    self.Name = ko.observable("");
     self.Ingredientes = ko.observableArray([]);
 
     if (!_.isUndefined(pizza)) {
         self.Id = ko.observable(pizza.Id);
-        self.Nome = ko.observable(pizza.Nome);
+        self.Name = ko.observable(pizza.Name);
         self.Ingredientes = ko.observableArray();
         _.each(pizza.Ingredientes, function (ing) {
             self.Ingredientes().push(new IngredienteVM(ing));
@@ -23,11 +23,11 @@ var PizzaVM = function (pizza) {
 var IngredienteVM = function (ingrediente) {
     var self = this;
     self.Id = ko.observable(0);
-    self.Nome = ko.observable("");
+    self.Name = ko.observable("");
 
     if (!_.isUndefined(ingrediente)) {
         self.Id = ko.observable(ingrediente.Id);
-        self.Nome = ko.observable(ingrediente.Nome);
+        self.Name = ko.observable(ingrediente.Name);
     }
 };
 

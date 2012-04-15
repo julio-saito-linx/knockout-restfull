@@ -9,13 +9,13 @@
 
 var chamarAjax = function (options) {
 
-    if (!_.isUndefined(options.callback_done) && options.nomeController == "simular_sucesso") {
+    if (!_.isUndefined(options.callback_done) && options.controllerName == "simular_sucesso") {
         options.callback_done();
     }
-    if (!_.isUndefined(options.callback_done) && options.nomeController == "POST_sucesso") {
+    if (!_.isUndefined(options.callback_done) && options.controllerName == "POST_sucesso") {
         options.callback_done(11);
     }
-    if (!_.isUndefined(options.callback_error) && options.nomeController == "simular_erro") {
+    if (!_.isUndefined(options.callback_error) && options.controllerName == "simular_erro") {
         options.callback_error();
     }
 };

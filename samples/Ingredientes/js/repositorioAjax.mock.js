@@ -7,44 +7,34 @@
     return self;
 };
 
-var chamarAjax = function (options) {
+var dados = [{"Id":1,"Name":"Cebola"},{"Id":2,"Name":"Muçarela"},{"Id":3,"Name":"Molho de Tomate"},{"Id":4,"Name":"Ovo"},{"Id":5,"Name":"Calabresa"}];
+var actual_id = 6;
 
+var chamarAjax = function (options) {
+    // GET - LIST
     if (!_.isUndefined(options.callback_done)
-            && options.nomeController == "ingrediente"
+            && options.controllerName == "ingrediente"
             && (options.metodo === METHOD.LIST || _.isUndefined(options.metodo))) {
 
-        var dados = [{"Id":1,"Nome":"Cebola"},{"Id":2,"Nome":"Muçarela"},{"Id":3,"Nome":"Molho de Tomate"},{"Id":4,"Nome":"Ovo"},{"Id":5,"Nome":"Calabresa"}];
         options.callback_done(dados);
-
     }
-
+    // PUT
     if (!_.isUndefined(options.callback_done)
-            && options.nomeController == "ingrediente"
+            && options.controllerName == "ingrediente"
             && (options.metodo === METHOD.PUT)) {
-        options.callback_done("PUT OK");
+        options.callback_done("PUT OK<br/>" + JSON.stringify(options, null, 2));
     }
-
+    // POST
     if (!_.isUndefined(options.callback_done)
-        && options.nomeController == "ingrediente"
+        && options.controllerName == "ingrediente"
         && (options.metodo === METHOD.POST)) {
-        options.callback_done(99);
+        options.callback_done(actual_id++);
     }
-
+    // DELETE
     if (!_.isUndefined(options.callback_done)
-        && options.nomeController == "ingrediente"
+        && options.controllerName == "ingrediente"
         && (options.metodo === METHOD.DELETE)) {
-        options.callback_done("DELETE OK");
-    }
-
-
-    if (!_.isUndefined(options.callback_done) && options.nomeController == "simular_sucesso") {
-        options.callback_done();
-    }
-    if (!_.isUndefined(options.callback_done) && options.nomeController == "POST_sucesso") {
-        options.callback_done(11);
-    }
-    if (!_.isUndefined(options.callback_error) && options.nomeController == "simular_erro") {
-        options.callback_error();
+        options.callback_done("DELETE OK<br/>" + JSON.stringify(options, null, 2));
     }
 };
 
