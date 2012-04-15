@@ -1,42 +1,41 @@
-var inicializarViewModel = function () {
-    var pizzaDto = [{ "Id": 1, "Ingredientes": [{ "Id": 3, "Name": "Molho de Tomate" }, { "Id": 4, "Name": "Ovo"}], "Name": "Portuguesa" }, { "Id": 2, "Ingredientes": [{ "Id": 3, "Name": "Molho de Tomate" }, { "Id": 1, "Name": "Cebola" }, { "Id": 5, "Name": "Calabresa"}], "Name": "Calabresa" }, { "Id": 3, "Ingredientes": [{ "Id": 3, "Name": "Molho de Tomate" }, { "Id": 2, "Name": "Muçarela"}], "Name": "Muçarela" }, { "Id": 4, "Ingredientes": [], "Name": "Pizza de vento"}];
-    
-    var vmKO = {};
-    // Inicializa o ViewModel
-    var controller = knockoutControllerInit({
-        viewMoldel: vmKO,
-        controllerName: "pizza",
-        dtoData: pizzaDto,
-        viewModelClass: PizzaVM
-    });
 
-    return controller;
+var initViewModel = function () {
+    var pizzaDto = getPizzaDto();
+
+    var vmKO = {};
+
+    return knockoutControllerInit({
+        viewMoldel:vmKO,
+        controllerName:"pizza",
+        dtoData:pizzaDto,
+        viewModelClass:PizzaVM
+    });
 };
 
 $(document).ready(function () {
-    // verifica se o viewModel ganhou as propriedades
-    test("01.inicializarControllerKnockout coloca novas variaveis no viewModel", function () {
-        var vmKO = inicializarViewModel().VmKO;
-        equal(!_.isUndefined(vmKO.list), true, "vmKO.lista");
-        equal(!_.isUndefined(vmKO.select), true, "vmKO.selecionar");
-        equal(!_.isUndefined(vmKO.selected), true, "vmKO.selecionado");
-        equal(!_.isUndefined(vmKO.wasUpdated), true, "vmKO.foiAlterado");
-        equal(!_.isUndefined(vmKO.exclude), true, "vmKO.excluir");
-        equal(!_.isUndefined(vmKO.create), true, "vmKO.novo");
-        equal(!_.isUndefined(vmKO.save), true, "vmKO.salvar");
-        equal(!_.isUndefined(vmKO.updating), true, "vmKO.atualizando");
+    test("01.inicializarControllerKnockout put new variables in ViewModel", function () {
+        // checks whether the properties were applied
+        var vmKO = initViewModel().VmKO;
+        equal(!_.isUndefined(vmKO.list), true, "vmKO.list");
+        equal(!_.isUndefined(vmKO.select), true, "vmKO.select");
+        equal(!_.isUndefined(vmKO.selected), true, "vmKO.selected");
+        equal(!_.isUndefined(vmKO.wasUpdated), true, "vmKO.wasUpdated");
+        equal(!_.isUndefined(vmKO.exclude), true, "vmKO.exclude");
+        equal(!_.isUndefined(vmKO.create), true, "vmKO.create");
+        equal(!_.isUndefined(vmKO.save), true, "vmKO.save");
+        equal(!_.isUndefined(vmKO.updating), true, "vmKO.updating");
     });
-    test("02.vmKO.lista :: deve possuir 4 pizzas, carregadas corretamente", function () {
-        var vmKO = inicializarViewModel().VmKO;
-        equal(vmKO.list().length, 4, "vmKO.lista().length");
-        equal(vmKO.list()[0].Name(), "Portuguesa", "vmKO.lista()[0].Nome()");
-        equal(vmKO.list()[0].Id(), 1, "vmKO.lista()[0].Id()");
+    test("02.vmKO.list :: must have four pizzas, loaded correctly", function () {
+        var vmKO = initViewModel().VmKO;
+        equal(vmKO.list().length, 4, "vmKO.list().length");
+        equal(vmKO.list()[0].Name(), "Portuguesa", "vmKO.list()[0].Nome()");
+        equal(vmKO.list()[0].Id(), 1, "vmKO.list()[0].Id()");
 
-        //inicia com o primeiro selecionado
+        // begins with the first selected
         var pizzaPortuguesa = vmKO.list()[0];
         equal(pizzaPortuguesa.Id(), vmKO.selected().Id(), "pizzaPortuguesa.Id() === vmKO.id()()");
     });
-    test("02.1.vmKO.lista :: chama ajax se lista nao estiver preenchida", function () {
+    test("02.1.vmKO.list :: call ajax if list is undefined", function () {
         var vmKO = { };
         knockoutControllerInit({
             viewMoldel: vmKO,
@@ -44,49 +43,48 @@ $(document).ready(function () {
             viewModelClass: PizzaVM,
             ajax_done : function () {
                             equal(false, vmKO.updating(),
-                                "controller.ajax_done :: vmKO.atualizando() === false");
+                                "controller.ajax_done :: vmKO.updating() === false");
                         }
         });
     });
-    test("03.vmKO.selecionar :: muda o item selecionado", function () {
-        var vmKO = inicializarViewModel().VmKO;
+    test("03.vmKO.select :: changes selected item", function () {
+        var vmKO = initViewModel().VmKO;
 
         var pizzaCalabresa = vmKO.list()[1];
         vmKO.select(pizzaCalabresa);
 
         equal(pizzaCalabresa.Id(), vmKO.selected().Id(), "pizzaPortuguesa.Id() === vmKO.id()()");
     });
-    test("04.vmKO.foiAlterado :: detecta mudancas na estrutura do objeto", function () {
-        var vmKO = inicializarViewModel().VmKO;
+    test("04.vmKO.wasUpdated :: detects changes in the structure of the object", function () {
+        var vmKO = initViewModel().VmKO;
 
-        // seleciona a primeira pizza
+        // selects the first pizza
         var pizzaCalabresa = vmKO.list()[1];
         vmKO.select(pizzaCalabresa);
-        // verifica se foi alterada
-        equal(false, vmKO.wasUpdated(), "ainda nao alterado");
+        // checks to see if has changed
+        equal(false, vmKO.wasUpdated(), "not yet changed");
 
-        // altera dados da pizza
+        // modifying pizza data
         pizzaCalabresa.Name("Calabresa 2");
 
-        // verifica se foi alterada
-        equal(true, vmKO.wasUpdated(), "foi alterado");
+        // checks to see if has changed
+        equal(true, vmKO.wasUpdated(), "was updated");
     });
-    test("05.vmKO.novo :: inclui novo item na lista", function () {
-        var vmKO = inicializarViewModel().VmKO;
+    test("05.vmKO.create :: includes new item in list", function () {
+        var vmKO = initViewModel().VmKO;
 
         var quantidadeInicial = vmKO.list().length;
 
-        // inclui novo item
-        // e seleciona-o
+        // includes a new item and selects it
         vmKO.create();
 
         equal(vmKO.list().length, quantidadeInicial + 1,
-            "inclui novo item na lista");
+            "includes new item in list");
 
         equal(0, vmKO.selected().Id(),
-            "seleciona o item novo logo de cara");
+            "selects the new item right away");
     });
-    test("06.1.ajaxRest atribui settings corretamente", function () {
+    test("06.1.ajaxRest settings correctly assigns", function () {
         var options = {
             controllerName: "pizza1",
             method: METHOD.LIST,
@@ -105,7 +103,7 @@ $(document).ready(function () {
         equal(ajax_config.settings.callback_done, options.callback_done, "callback_done ");
         equal(ajax_config.settings.callback_error, options.callback_error, "callback_error");
     });
-    test("06.2.ajaxRest atribui settings padroes corretamente", function () {
+    test("06.2.ajaxRest settings correctly assign defaults", function () {
         var options = {
             controllerName: "pizza2"
         };
@@ -119,82 +117,140 @@ $(document).ready(function () {
         equal(ajax_config.settings.callback_done, undefined, "callback_done ");
         equal(ajax_config.settings.callback_error, undefined, "callback_error");
     });
-    test("07.1.vmKO.salvar :: salvar OK", function () {
-        // inicializa o VM
-        var controller = inicializarViewModel();
+    test("07.1.vmKO.save :: save OK", function () {
+        // initializes VM
+        var controller = initViewModel();
         controller.controllerName = "force_post_success";
         var vmKO = controller.VmKO;
 
-        // altera a primeira pizza
-        var itemAtual = vmKO.selected;
-        itemAtual().Name("Portuguesa 2");
+        // changes the first pizza
+        var item = vmKO.selected;
+        item().Name("Portuguesa 2");
 
         controller.ajax_done = function (data) {
             equal(false, vmKO.updating(),
-                "controller.ajax_done :: vmKO.atualizando() === false");
+                "controller.ajax_done :: vmKO.updating() === false");
             equal(11, data,
-            	"controller.ajax_done :: retorna novo ID inserido via POST");
+            	"controller.ajax_done :: returns the new ID entered by POST");
         };
 
         vmKO.save();
 
     });
-    test("07.2.vmKO.salvar :: salvar ERRO", function () {
-        // inicializa o VM
-        var controller = inicializarViewModel();
+    test("07.2.vmKO.save :: save ERROR", function () {
+        // initializes VM
+        var controller = initViewModel();
         controller.controllerName = "force_error";
         var vmKO = controller.VmKO;
 
-        // altera a primeira pizza
-        var itemAtual = vmKO.selected;
-        itemAtual().Name("Portuguesa 2");
+        // changes the first pizza
+        var selectedItem = vmKO.selected;
+        selectedItem().Name("Portuguesa 2");
 
         controller.ajax_error = function () {
             equal(false, vmKO.updating(),
-                "controller.ajax_error :: vmKO.atualizando() === false");
+                "controller.ajax_error :: vmKO.updating() === false");
         };
 
         vmKO.save();
     });
 
-    test("08.1.vmKO.excluir :: excluir OK", function () {
-        // inicializa o VM
-        var controller = inicializarViewModel();
+    test("08.1.vmKO.exclude :: exclude OK", function () {
+        // initializes VM
+        var controller = initViewModel();
         controller.controllerName = "force_success";
         var vmKO = controller.VmKO;
 
-        var quantidadeInicialItens = vmKO.list().length;
+        var initialLength = vmKO.list().length;
 
         controller.ajax_done = function () {
             equal(false, vmKO.updating(),
-                "controller.ajax_done :: vmKO.atualizando() === false");
+                "controller.ajax_done :: vmKO.updating() === false");
         };
 
         vmKO.exclude();
 
-        equal(vmKO.list().length, quantidadeInicialItens - 1,
-        "deve retirar um item da lista");
+        equal(vmKO.list().length, initialLength - 1,
+        "must remove an item from the list");
 
         equal(vmKO.selected().Id(), 2,
-        "deve selecionar o proximo item");
+        "must select the next item");
     });
-    test("08.2.vmKO.excluir :: excluir ERRO", function () {
-        // inicializa o VM
-        var controller = inicializarViewModel();
+    test("08.2.vmKO.exclude :: exclude ERROR", function () {
+        // initializes VM
+        var controller = initViewModel();
         controller.controllerName = "force_error";
         var vmKO = controller.VmKO;
 
-        var quantidadeInicialItens = vmKO.list().length;
+        var initialLength = vmKO.list().length;
 
         controller.ajax_error = function () {
             equal(false, vmKO.updating(),
-                "controller.ajax_error :: vmKO.atualizando() === false");
+                "controller.ajax_error :: vmKO.updating() === false");
         };
 
         vmKO.exclude();
 
-        equal(vmKO.list().length, quantidadeInicialItens,
-        "não deve alterar a quantidade pois deu erro");
+        equal(vmKO.list().length, initialLength,
+        "should not change the amount it gave error");
     });
 
 });
+
+var getPizzaDto = function() {
+    return [
+        {
+            "Id":1,
+            "Ingredientes":[
+                {
+                    "Id":3,
+                    "Name":"Molho de Tomate"
+                },
+                {
+                    "Id":4,
+                    "Name":"Ovo"
+                }
+            ],
+            "Name":"Portuguesa"
+        },
+        {
+            "Id":2,
+            "Ingredientes":[
+                {
+                    "Id":3,
+                    "Name":"Molho de Tomate"
+                },
+                {
+                    "Id":1,
+                    "Name":"Cebola"
+                },
+                {
+                    "Id":5,
+                    "Name":"Calabresa"
+                }
+            ],
+            "Name":"Calabresa"
+        },
+        {
+            "Id":3,
+            "Ingredientes":[
+                {
+                    "Id":3,
+                    "Name":"Molho de Tomate"
+                },
+                {
+                    "Id":2,
+                    "Name":"Muçarela"
+                }
+            ],
+            "Name":"Muçarela"
+        },
+        {
+            "Id":4,
+            "Ingredientes":[
+
+            ],
+            "Name":"Pizza de vento"
+        }
+    ];
+}
