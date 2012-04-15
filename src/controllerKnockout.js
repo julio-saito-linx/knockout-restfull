@@ -165,8 +165,7 @@ var knockoutControllerInit = function (config) {
                 if (!_.isUndefined(controller.ajax_error)) {
                     controller.ajax_error(jqXHR);
                 }
-            },
-            asynchronous: false
+            }
         });
     }
 

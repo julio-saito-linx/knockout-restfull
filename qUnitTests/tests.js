@@ -93,8 +93,7 @@ $(document).ready(function () {
             id: 1,
             data: { "Id": 1, "Name": "Portuguesa 2", "Ingredientes": [{ "Id": 3, "Name": "Molho de Tomate" }, { "Id": 4, "Name": "Ovo"}] },
             callback_done: { objeto: 1 },
-            callback_error: { objeto: 2 },
-            asynchronous: false
+            callback_error: { objeto: 2 }
         };
 
         var ajax_config = new ajaxRest(options);
@@ -105,7 +104,6 @@ $(document).ready(function () {
         equal(ajax_config.settings.data, options.data, "data");
         equal(ajax_config.settings.callback_done, options.callback_done, "callback_done ");
         equal(ajax_config.settings.callback_error, options.callback_error, "callback_error");
-        equal(ajax_config.settings.asynchronous, options.asynchronous, "asynchronous");
     });
     test("06.2.ajaxRest atribui settings padroes corretamente", function () {
         var options = {
@@ -120,7 +118,6 @@ $(document).ready(function () {
         equal(ajax_config.settings.data, undefined, "data");
         equal(ajax_config.settings.callback_done, undefined, "callback_done ");
         equal(ajax_config.settings.callback_error, undefined, "callback_error");
-        equal(ajax_config.settings.asynchronous, true, "asynchronous");
     });
     test("07.1.vmKO.salvar :: salvar OK", function () {
         // inicializa o VM
