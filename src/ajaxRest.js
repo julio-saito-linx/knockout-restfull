@@ -13,38 +13,14 @@ var ajaxRest = function (options) {
     // Force options to be an object
     options = options || {};
 
-    // default
+    // option || default
     self.settings = {};
-    self.settings.controllerName = "";
-    self.settings.method = METHOD.LIST;
-    self.settings.id = undefined;
-    self.settings.data = undefined;
-    self.settings.callback_done = undefined;
-    self.settings.callback_error = undefined;
-    self.settings.asynchronous = true;
-
-    //self.settings = ajaxRestSettings;
-    if (!_.isUndefined(options.controllerName)) {
-        self.settings.controllerName = options.controllerName;
-    }
-    if (!_.isUndefined(options.method)) {
-        self.settings.method = options.method;
-    }
-    if (!_.isUndefined(options.id)) {
-        self.settings.id = options.id;
-    }
-    if (!_.isUndefined(options.data)) {
-        self.settings.data = options.data;
-    }
-    if (!_.isUndefined(options.callback_done)) {
-        self.settings.callback_done = options.callback_done;
-    }
-    if (!_.isUndefined(options.callback_error)) {
-        self.settings.callback_error = options.callback_error;
-    }
-    if (!_.isUndefined(options.asynchronous)) {
-        self.settings.asynchronous = options.asynchronous;
-    }
+    self.settings.controllerName = options.controllerName || "";
+    self.settings.method = options.method || METHOD.LIST;
+    self.settings.id = options.id || undefined;
+    self.settings.data = options.data || undefined;
+    self.settings.callback_done = options.callback_done || undefined;
+    self.settings.callback_error = options.callback_error || undefined;
 
     self.callAjax = function () {
         // prepara URL
@@ -58,8 +34,7 @@ var ajaxRest = function (options) {
         var ajaxCall = {
             type: self.settings.method.type,
             url: uri,
-            contentType: "application/json",
-            async: self.settings.asynchronous
+            contentType: "application/json"
         };
         ajaxCall.data = self.settings.data;
 
