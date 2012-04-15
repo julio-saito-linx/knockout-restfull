@@ -1,39 +1,47 @@
 ﻿// ////////////////////////
 //  IngredienteVM :: VIEWMODEL
 // ////////////////////////
-var IngredienteVM = function (ingrediente) {
+var IngredienteVM = function (ingredient) {
     var self = this;
     self.Id = ko.observable(0);
-    self.Nome = ko.observable("");
+    self.Name = ko.observable("");
 
-    if (!_.isUndefined(ingrediente)) {
-        self.Id = ko.observable(ingrediente.Id);
-        self.Nome = ko.observable(ingrediente.Nome);
+    if (!_.isUndefined(ingredient)) {
+        self.Id = ko.observable(ingredient.Id);
+        self.Name = ko.observable(ingredient.Name);
     }
 };
 
 // //////////////////////////////////////////////////////////////////////////////
 //  MAIN :: VIEWMODEL
-//  Define os itens que serão observáveis, ou seja, sicronizados via M,V,VM
+//  Sets observable items
 //  controller.VmKO:
 //   - lista, selecionar, id, selecionado, foiAlterado, excluir, novo, salvar, atualizando
 // //////////////////////////////////////////////////////////////////////////////
-var MainViewModel = function (ingredientesDto) {
+var MainViewModel = function (ingredientsDto) {
 	var self = this;
 
     var ajax_done_received = function (data) {
-        var stringify = JSON.stringify(data);
-        exibirNotyBaixo("AJAX SIMULATION:<br/>" + stringify);
+        var stringify;
+        if(_.isObject(data)) {
+            $("#preLog").append("JS received:\n");
+            stringify = JSON.stringify(data, null, 2);
+        }
+        else{
+            stringify = data;
+        }
+        $("#preLog").append(stringify);
+        $("#preLog").append("\n\n");
     };
 
     ajax_error_received = function (jqXHR) {
-        exibirNotyErro(tratarErrorCSharp(jqXHR));
+        //show ajax error here
     };
 
-    var controllerIngrediente = new inicializarControllerKnockout({
+    var ingredientController = new inicializarControllerKnockout({
 		viewMoldel: self.ingredienteVm = {},
-		nomeController: "ingrediente",
-		dadosDto: ingredientesDto,
+		controllerName: "ingrediente",
+		dadosDto: ingredientsDto,
 		ClasseViewModel: IngredienteVM,
         ajax_done : ajax_done_received,
         ajax_error : ajax_error_received
@@ -43,11 +51,16 @@ var MainViewModel = function (ingredientesDto) {
 };
 
 // //////////////////////////////////////////////////////////////////////////////
-//  READY: Inicializa o knockout
+//  READY: Initializes knockout
 // //////////////////////////////////////////////////////////////////////////////
 var mainViewModel;
 $().ready(function() {
     mainViewModel = new MainViewModel();
     ko.applyBindings(mainViewModel); // This makes Knockout get to work
+
+    $("#buttonShowDebugInfo").click(function(){
+        $("#divLog").toggle();
+        $("#divDebug").toggle();
+    });
 });
 

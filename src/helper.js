@@ -4,15 +4,19 @@
     return primeiraLetra + texto.substring(1);
 };
 
-var exibirNotyBaixo = function (mensagem) {
+var exibirNotyBaixo = function (mensagem, milisec) {
+    if(_.isUndefined(milisec)){
+        milisec = 2000;
+    }
 
     noty({"text":mensagem,
         "layout":"bottom",
         "type":"success",
+        "textAlign": "left",
         "animateOpen":{"height":"toggle"},
         "animateClose":{"height":"toggle"},
         "speed":500,
-        "timeout":2000,
+        "timeout":milisec,
         "closeButton":false,
         "closeOnSelfClick":true,
         "closeOnSelfOver":false});

@@ -1,11 +1,11 @@
 var inicializarViewModel = function () {
-    var pizzaDto = [{ "Id": 1, "Ingredientes": [{ "Id": 3, "Nome": "Molho de Tomate" }, { "Id": 4, "Nome": "Ovo"}], "Nome": "Portuguesa" }, { "Id": 2, "Ingredientes": [{ "Id": 3, "Nome": "Molho de Tomate" }, { "Id": 1, "Nome": "Cebola" }, { "Id": 5, "Nome": "Calabresa"}], "Nome": "Calabresa" }, { "Id": 3, "Ingredientes": [{ "Id": 3, "Nome": "Molho de Tomate" }, { "Id": 2, "Nome": "Mu�arela"}], "Nome": "Mu�arela" }, { "Id": 4, "Ingredientes": [], "Nome": "Pizza de vento"}];
+    var pizzaDto = [{ "Id": 1, "Ingredientes": [{ "Id": 3, "Name": "Molho de Tomate" }, { "Id": 4, "Name": "Ovo"}], "Name": "Portuguesa" }, { "Id": 2, "Ingredientes": [{ "Id": 3, "Name": "Molho de Tomate" }, { "Id": 1, "Name": "Cebola" }, { "Id": 5, "Name": "Calabresa"}], "Name": "Calabresa" }, { "Id": 3, "Ingredientes": [{ "Id": 3, "Name": "Molho de Tomate" }, { "Id": 2, "Name": "Mu�arela"}], "Name": "Mu�arela" }, { "Id": 4, "Ingredientes": [], "Name": "Pizza de vento"}];
     
     var vmKO = {};
     // Inicializa o ViewModel
     var controller = inicializarControllerKnockout({
         viewMoldel: vmKO,
-        nomeController: "pizza",
+        controllerName: "pizza",
         dadosDto: pizzaDto,
         ClasseViewModel: PizzaVM
     });
@@ -29,7 +29,7 @@ $(document).ready(function () {
     test("02.vmKO.lista :: deve possuir 4 pizzas, carregadas corretamente", function () {
         var vmKO = inicializarViewModel().VmKO;
         equal(vmKO.lista().length, 4, "vmKO.lista().length");
-        equal(vmKO.lista()[0].Nome(), "Portuguesa", "vmKO.lista()[0].Nome()");
+        equal(vmKO.lista()[0].Name(), "Portuguesa", "vmKO.lista()[0].Nome()");
         equal(vmKO.lista()[0].Id(), 1, "vmKO.lista()[0].Id()");
 
         //inicia com o primeiro selecionado
@@ -40,7 +40,7 @@ $(document).ready(function () {
         var vmKO = { };
         inicializarControllerKnockout({
             viewMoldel: vmKO,
-            nomeController: "simular_sucesso",
+            controllerName: "simular_sucesso",
             ClasseViewModel: PizzaVM,
             ajax_done : function () {
                             equal(false, vmKO.atualizando(),
@@ -66,7 +66,7 @@ $(document).ready(function () {
         equal(false, vmKO.foiAlterado(), "ainda nao alterado");
 
         // altera dados da pizza
-        pizzaCalabresa.Nome("Calabresa 2");
+        pizzaCalabresa.Name("Calabresa 2");
 
         // verifica se foi alterada
         equal(true, vmKO.foiAlterado(), "foi alterado");
@@ -88,10 +88,10 @@ $(document).ready(function () {
     });
     test("06.1.ajaxRest atribui settings corretamente", function () {
         var options = {
-            nomeController: "pizza1",
+            controllerName: "pizza1",
             metodo: METHOD.LIST,
             id: 1,
-            dados: { "Id": 1, "Nome": "Portuguesa 2", "Ingredientes": [{ "Id": 3, "Nome": "Molho de Tomate" }, { "Id": 4, "Nome": "Ovo"}] },
+            dados: { "Id": 1, "Name": "Portuguesa 2", "Ingredientes": [{ "Id": 3, "Name": "Molho de Tomate" }, { "Id": 4, "Name": "Ovo"}] },
             callback_done: { objeto: 1 },
             callback_error: { objeto: 2 },
             assincrono: false
@@ -99,7 +99,7 @@ $(document).ready(function () {
 
         var ajax_config = new ajaxRest(options);
 
-        equal(ajax_config.settings.nomeController, options.nomeController, "nomeController");
+        equal(ajax_config.settings.controllerName, options.controllerName, "controllerName");
         equal(ajax_config.settings.metodo, options.metodo, "metodo");
         equal(ajax_config.settings.id, options.id, "id");
         equal(ajax_config.settings.dados, options.dados, "dados");
@@ -109,12 +109,12 @@ $(document).ready(function () {
     });
     test("06.2.ajaxRest atribui settings padroes corretamente", function () {
         var options = {
-            nomeController: "pizza2"
+            controllerName: "pizza2"
         };
 
         var ajax_config = new ajaxRest(options);
 
-        equal(ajax_config.settings.nomeController, options.nomeController, "nomeController");
+        equal(ajax_config.settings.controllerName, options.controllerName, "controllerName");
         equal(ajax_config.settings.metodo, METHOD.LIST, "metodo");
         equal(ajax_config.settings.id, undefined, "id");
         equal(ajax_config.settings.dados, undefined, "dados");
@@ -125,12 +125,12 @@ $(document).ready(function () {
     test("07.1.vmKO.salvar :: salvar OK", function () {
         // inicializa o VM
         var controller = inicializarViewModel();
-        controller.nomeController = "POST_sucesso";
+        controller.controllerName = "POST_sucesso";
         var vmKO = controller.VmKO;
 
         // altera a primeira pizza
         var itemAtual = vmKO.selecionado;
-        itemAtual().Nome("Portuguesa 2");
+        itemAtual().Name("Portuguesa 2");
 
         controller.ajax_done = function (data) {
             equal(false, vmKO.atualizando(),
@@ -145,12 +145,12 @@ $(document).ready(function () {
     test("07.2.vmKO.salvar :: salvar ERRO", function () {
         // inicializa o VM
         var controller = inicializarViewModel();
-        controller.nomeController = "simular_erro";
+        controller.controllerName = "simular_erro";
         var vmKO = controller.VmKO;
 
         // altera a primeira pizza
         var itemAtual = vmKO.selecionado;
-        itemAtual().Nome("Portuguesa 2");
+        itemAtual().Name("Portuguesa 2");
 
         controller.ajax_error = function () {
             equal(false, vmKO.atualizando(),
@@ -163,7 +163,7 @@ $(document).ready(function () {
     test("08.1.vmKO.excluir :: excluir OK", function () {
         // inicializa o VM
         var controller = inicializarViewModel();
-        controller.nomeController = "simular_sucesso";
+        controller.controllerName = "simular_sucesso";
         var vmKO = controller.VmKO;
 
         var quantidadeInicialItens = vmKO.lista().length;
@@ -184,7 +184,7 @@ $(document).ready(function () {
     test("08.2.vmKO.excluir :: excluir ERRO", function () {
         // inicializa o VM
         var controller = inicializarViewModel();
-        controller.nomeController = "simular_erro";
+        controller.controllerName = "simular_erro";
         var vmKO = controller.VmKO;
 
         var quantidadeInicialItens = vmKO.lista().length;

@@ -32,7 +32,7 @@ option, input{
     left: 170px;
 }
 
-.divConteudo {
+.divContent {
     padding: 10px;
     width: 250px;
     float: left;
@@ -42,6 +42,7 @@ option, input{
 }
 
 #divDebug {
+    display: none;
     background: #FFF;
     color: #555;
     font-family: Consolas;
@@ -51,23 +52,44 @@ option, input{
     float: right;
     position: absolute;
     top: 20px;
-    right: 20px;
+    left: 830px;
 }
-
-#divDebug h3{
+h3{
     margin: 2px;
     padding: 1px;
     font-family: Consolas;
     font-size: 1.30em;
 }
-
-.itemDebug 
+.itemDebug
 {
     border: solid 2px;
     border-color: #888;
     display: block;
     width: 500px;
     height: 500px;
+    overflow: auto
+}
+
+#divLog {
+    display: none;
+    background: #FFF;
+    color: #555;
+    font-family: Consolas;
+    font-size: 1.00em;
+    margin: 5px;
+    padding: 20px;
+    float: right;
+    position: absolute;
+    top: 220px;
+    left: 330px;
+}
+.itemLog
+{
+    border: solid 2px;
+    border-color: #888;
+    display: block;
+    width: 420px;
+    height: 300px;
     overflow: auto
 }
 

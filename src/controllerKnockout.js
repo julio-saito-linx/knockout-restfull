@@ -1,6 +1,6 @@
 ﻿var configControllerKnockout = {
     viewMoldel: {},
-    nomeController: "",
+    controllerName: "",
     dadosDto: [],
     ClasseViewModel: undefined
 };
@@ -14,7 +14,7 @@
 // ///////////////////////////////////////////////////
 var inicializarControllerKnockout = function (config) {
     var controller = {};
-    controller.nomeController = config.nomeController;
+    controller.controllerName = config.controllerName;
     controller.ClasseViewModel = config.ClasseViewModel;
     controller.dadosDto = undefined;
 
@@ -93,7 +93,7 @@ var inicializarControllerKnockout = function (config) {
 
         // chamada callAjax
         chamarAjax({
-            nomeController: controller.nomeController,
+            controllerName: controller.controllerName,
             metodo: metodoHttp,
             id: vmKO.selecionado().Id(),
             dados: vmSerializado,
@@ -124,7 +124,7 @@ var inicializarControllerKnockout = function (config) {
         vmKO.atualizando(true);
 
         chamarAjax({
-            nomeController: controller.nomeController,
+            controllerName: controller.controllerName,
             metodo: METHOD.DELETE,
             id: vmKO.selecionado().Id(),
             callback_done: function (data) {
@@ -169,7 +169,7 @@ var inicializarControllerKnockout = function (config) {
     }
     else {
         chamarAjax({
-            nomeController: controller.nomeController,
+            controllerName: controller.controllerName,
             callback_done: function (data) {
                 controller.dadosDto = data;
                 carregarDados(controller);
