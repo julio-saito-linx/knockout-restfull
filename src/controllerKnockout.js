@@ -1,22 +1,15 @@
 ﻿var configControllerKnockout = {
     viewMoldel: {},
     controllerName: "",
-    dadosDto: [],
-    ClasseViewModel: undefined
+    dtoData: [],
+    viewModelClass: undefined
 };
 
-// ///////////////////////////////////////////////////
-// inicializarControllerKnockout /////////////////////////////////
-// ---------------------------------------------------
-// Configura um viewModel knockout de forma automática.
-// Expõe um CRUD básico.
-// ---------------------------------------------------
-// ///////////////////////////////////////////////////
-var inicializarControllerKnockout = function (config) {
+var knockoutControllerInit = function (config) {
     var controller = {};
     controller.controllerName = config.controllerName;
-    controller.ClasseViewModel = config.ClasseViewModel;
-    controller.dadosDto = undefined;
+    controller.viewModelClass = config.viewModelClass;
+    controller.dtoData = undefined;
 
     var vmKO = config.viewMoldel;
 
@@ -24,94 +17,82 @@ var inicializarControllerKnockout = function (config) {
     // CALL BACKS
     // ///////////////////////////////////////////////////
     controller.ajax_done = config.ajax_done;
-    controller.ajax_salvar = config.ajax_salvar;
-    controller.ajax_excluir = config.ajax_excluir;
+    controller.ajax_save = config.ajax_save;
+    controller.ajax_delete = config.ajax_delete;
     controller.ajax_error = config.ajax_error;
 
-    // em processo de comunicação com o servidor
-    vmKO.atualizando = ko.observable(false);
+    // communicating with the server
+    vmKO.updating = ko.observable(false);
 
-    // somente o id que estiver selecionado
-    vmKO.selecionar = function (item) {
-        // salva o item anterior
-        vmKO.salvar();
-        // define o novo ITEM selecionado
-        vmKO.selecionado(item);
-        // guarda o estado inicial do novo item
-        vmKO.jsonItem = ko.toJSON(vmKO.selecionado);
+    // only selected id
+    vmKO.select = function (item) {
+        vmKO.save();
+        vmKO.selected(item);
+        // stores new item initial state for later comparison
+        vmKO.jsonItem = ko.toJSON(vmKO.selected);
     };
 
-    // selecionar item
-    vmKO.foiAlterado = function () {
+    vmKO.wasUpdated = function () {
         if (!_.isUndefined(vmKO.jsonItem)) {
-            var jsonItemAtual = ko.toJSON(vmKO.selecionado);
-            return (vmKO.jsonItem !== jsonItemAtual);
+            var jsonActualItem = ko.toJSON(vmKO.selected);
+            return (vmKO.jsonItem !== jsonActualItem);
         }
         return false;
     };
 
-
-
-    // ///////////////////////////////////////////////////
-    // REST
-    // ///////////////////////////////////////////////////
-
-    // [POST] 
-    vmKO.novo = function () {
-        var novoVm = new controller.ClasseViewModel();
-        vmKO.lista.push(novoVm);
-        vmKO.selecionar(novoVm);
+    // [POST]
+    vmKO.create = function () {
+        var newViewModel = new controller.viewModelClass();
+        vmKO.list.push(newViewModel);
+        vmKO.select(newViewModel);
     };
 
     // [POST/PUT] 
-    vmKO.salvar = function () {
+    vmKO.save = function () {
 
-        // não existe item selecionado, cai fora
-        if (_.isUndefined(vmKO.selecionado)) {
+        // there is no selected item, get out
+        if (_.isUndefined(vmKO.selected)) {
             return;
         }
 
-        // somente salva se o JSON foi alterado
-        if (!vmKO.foiAlterado()) {
+        // only saves the JSON has changed
+        if (!vmKO.wasUpdated()) {
             return;
         }
 
-        // marca como em processo de atualização, fazendo alguma forma de comunicação
-        // visual com o usuário informar que o processo está em execução.
-        // Geralmente utilizamos uma animação GIF com a bolinha rodando
-        vmKO.atualizando(true);
+        // mark as being updated
+        // generally we use an animated GIF
+        vmKO.updating(true);
 
-        // guarda o novo objeto em JSON, para posteriores comparações
-        var vmSerializado = ko.toJSON(vmKO.selecionado);
+        // saves the new object in JSON for later comparisons
+        var serializedVm = ko.toJSON(vmKO.selected);
 
         var metodoHttp = METHOD.PUT;
-        if (vmKO.selecionado().Id() === 0) {
-            // se o Id estiver zerado, significa que é um item novo.
+        if (vmKO.selected().Id() === 0) {
+            // if the Id is zero, it means that an item is new.
             metodoHttp = METHOD.POST;
         }
 
-
-        // chamada callAjax
-        chamarAjax({
+        callAjax({
             controllerName: controller.controllerName,
-            metodo: metodoHttp,
-            id: vmKO.selecionado().Id(),
-            dados: vmSerializado,
+            method: metodoHttp,
+            id: vmKO.selected().Id(),
+            data: serializedVm,
             callback_done: function (data) {
-                vmKO.atualizando(false);
+                vmKO.updating(false);
                 if (!_.isUndefined(controller.ajax_done)) {
                     controller.ajax_done(data);
                 }
-                if (!_.isUndefined(controller.ajax_salvar)) {
-                    controller.ajax_salvar(data);
+                if (!_.isUndefined(controller.ajax_save)) {
+                    controller.ajax_save(data);
                 }
-                // se foi inclusão, pega o novo ID
+                // it was included, get the new ID
                 if(metodoHttp === METHOD.POST){
-                	vmKO.selecionado().Id(data);
+                	vmKO.selected().Id(data);
                 }
             },
             callback_error: function (jqXHR) {
-                vmKO.atualizando(false);
+                vmKO.updating(false);
                 if (!_.isUndefined(controller.ajax_error)) {
                     controller.ajax_error(jqXHR);
                 }
@@ -120,39 +101,41 @@ var inicializarControllerKnockout = function (config) {
     };
 
     // [DELETE] 
-    vmKO.excluir = function () {
-        vmKO.atualizando(true);
+    vmKO.exclude = function () {
+        vmKO.updating(true);
 
-        chamarAjax({
+        callAjax({
             controllerName: controller.controllerName,
-            metodo: METHOD.DELETE,
-            id: vmKO.selecionado().Id(),
+            method: METHOD.DELETE,
+            id: vmKO.selected().Id(),
+
+            // was able to remove on server
+            // removes the item from the current list
             callback_done: function (data) {
-                //guarda indice atual
-                var indiceAtual = _.indexOf(vmKO.lista(), vmKO.selecionado())
+
+                //saves the current index
+                var currentIndex = _.indexOf(vmKO.list(), vmKO.selected())
                 
-                // se conseguiu excluir no servidor
-                // retira o item da lista atual
-                var novaLista = _.reject(vmKO.lista(), function (item) {
-                    return item.Id() === vmKO.selecionado().Id();
+                var newList = _.reject(vmKO.list(), function (item) {
+                    return item.Id() === vmKO.selected().Id();
                 });
-                vmKO.lista(novaLista);
-                vmKO.atualizando(false);
+                vmKO.list(newList);
+                vmKO.updating(false);
                 
-                //seleciona próximo da lista
-                var ultimoItem = vmKO.lista().length - 1;
-                var selecionarIndice = (indiceAtual <= ultimoItem) ? indiceAtual : ultimoItem;
-        		vmKO.selecionar(vmKO.lista()[selecionarIndice]);
+                // selects next the list
+                var lastItem = vmKO.list().length - 1;
+                var indexToSelect = (currentIndex <= lastItem) ? currentIndex : lastItem;
+        		vmKO.select(vmKO.list()[indexToSelect]);
 
         		if (!_.isUndefined(controller.ajax_done)) {
         		    controller.ajax_done(data);
                 }
-                if (!_.isUndefined(controller.ajax_excluir)) {
-                    controller.ajax_excluir(data);
+                if (!_.isUndefined(controller.ajax_delete)) {
+                    controller.ajax_delete(data);
                 }
             },
             callback_error: function (jqXHR) {
-                vmKO.atualizando(false);
+                vmKO.updating(false);
                 if (!_.isUndefined(controller.ajax_error)) {
                     controller.ajax_error(jqXHR);
                 }
@@ -162,47 +145,47 @@ var inicializarControllerKnockout = function (config) {
 
     controller.VmKO = vmKO;
 
-    // Os dados já vieram preenchidos
-    if (!_.isUndefined(config.dadosDto)) {
-        controller.dadosDto = config.dadosDto;
-        carregarDados(controller);
+    if (!_.isUndefined(config.dtoData)) {
+        // The data have come filled
+        controller.dtoData = config.dtoData;
+        loadDtoData(controller);
     }
     else {
-        chamarAjax({
+        callAjax({
             controllerName: controller.controllerName,
             callback_done: function (data) {
-                controller.dadosDto = data;
-                carregarDados(controller);
+                controller.dtoData = data;
+                loadDtoData(controller);
                 if (!_.isUndefined(controller.ajax_done)) {
                     controller.ajax_done(data);
                 }
             },
             callback_error: function (jqXHR) {
-                vmKO.atualizando(false);
+                vmKO.updating(false);
                 if (!_.isUndefined(controller.ajax_error)) {
                     controller.ajax_error(jqXHR);
                 }
             },
-            assincrono: false
+            asynchronous: false
         });
     }
 
     return controller;
 };
 
-var carregarDados = function (controller) {
-    // cria viewModel para cada Dto
-    var viewModelLista = _.map(controller.dadosDto, function (itemDto) {
-        return new controller.ClasseViewModel(itemDto);
+var loadDtoData = function (controller) {
+    // establishing a knockout VM for each Dto
+    var viewModelLista = _.map(controller.dtoData, function (itemDto) {
+        return new controller.viewModelClass(itemDto);
     });
 
     var vmKO = controller.VmKO;
 
     // [GET]
-    vmKO.lista = ko.observableArray(viewModelLista);
+    vmKO.list = ko.observableArray(viewModelLista);
 
-    // item selecionado, inicia com o primeiro
-    vmKO.selecionado = ko.observable(viewModelLista[0]);
+    // selected item, starting with the first in the list
+    vmKO.selected = ko.observable(viewModelLista[0]);
 
-    vmKO.jsonItem = ko.toJSON(vmKO.selecionado);
+    vmKO.jsonItem = ko.toJSON(vmKO.selected);
 };

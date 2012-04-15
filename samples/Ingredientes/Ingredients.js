@@ -1,7 +1,7 @@
 ﻿// ////////////////////////
-//  IngredienteVM :: VIEWMODEL
+//  IngredientVM :: VIEWMODEL
 // ////////////////////////
-var IngredienteVM = function (ingredient) {
+var IngredientVM = function (ingredient) {
     var self = this;
     self.Id = ko.observable(0);
     self.Name = ko.observable("");
@@ -16,7 +16,7 @@ var IngredienteVM = function (ingredient) {
 //  MAIN :: VIEWMODEL
 //  Sets observable items
 //  controller.VmKO:
-//   - lista, selecionar, id, selecionado, foiAlterado, excluir, novo, salvar, atualizando
+//   - list, select, id, selected, wasUpdated, delete, create, save, updating
 // //////////////////////////////////////////////////////////////////////////////
 var MainViewModel = function (ingredientsDto) {
 	var self = this;
@@ -38,11 +38,11 @@ var MainViewModel = function (ingredientsDto) {
         //show ajax error here
     };
 
-    var ingredientController = new inicializarControllerKnockout({
-		viewMoldel: self.ingredienteVm = {},
-		controllerName: "ingrediente",
-		dadosDto: ingredientsDto,
-		ClasseViewModel: IngredienteVM,
+    var ingredientController = new knockoutControllerInit({
+		viewMoldel: self.ingredientVm = {},
+		controllerName: "ingredient",
+		dtoData: ingredientsDto,
+		viewModelClass: IngredientVM,
         ajax_done : ajax_done_received,
         ajax_error : ajax_error_received
 	});
