@@ -30,35 +30,78 @@
       <section id="main_content">
         <h3>Knockout-restfull, the easy way to make rest controllers</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
+<p>Try it!</p>
 <ul>
     <li><a href="samples/Ingredientes/Ingredients.html">Sample: Ingredients</a></li>
     <li><a href="qUnitTests/tests.html">qUnit tests</a></li>
 </ul>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+
+        <p>This mini framework help you to create a restfull knockout controller.
+        First, create a new knockout view model:</p>
+		<pre><code>// knockout.js view model
+  var IngredientVM = function (ingredient) {
+    var self = this;
+    self.Id = ko.observable(0);
+    self.Name = ko.observable("");
+    
+    if (!_.isUndefined(ingredient)) {
+        self.Id = ko.observable(ingredient.Id);
+        self.Name = ko.observable(ingredient.Name);
+    }
+  };</code></pre>
+
+<p>Now, prepare your control with a new knockoutControllerInit object</p>
+
+<pre><code>var MainViewModel = function (ingredientsDto) {
+	var self = this;
+
+    var ingredientController = new knockoutControllerInit({
+		viewMoldel: self.ingredientVm = {},
+		controllerName: "ingredient",
+		dtoData: ingredientsDto,
+		viewModelClass: IngredientVM
+	});
+};
+
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
 
-<h3>Designer Templates</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Use $.ready to initilize your viewModel</p>
 
-<h3>Rather Drive Stick?</h3>
+<pre><code>$().ready(function() {
+    mainViewModel = new MainViewModel();
+    ko.applyBindings(mainViewModel); // This makes Knockout get to work
+});
+</code></pre>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+
+
+
+
+<p>This offers a variety of methods for you:</p>
+
+<ul>
+	<li>list : arrays<itens></li>
+	<li>select(item)</li>
+	<li>id : int</li>
+	<li>selected : item</li>
+	<li>wasUpdated() : bool</li>
+	<li>delete(item)</li>
+	<li>create()</li>
+	<li>save()</li>
+	<li>updating : bool</li>
+</ul>
+
 
 <h3>Authors and Contributors</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Creator: Julio Makdisse Saito <a href="https://github.com/saitodisse" class="user-mention">@saitodisse</a></p>
 
 <h3>Support or Contact</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact support@github.com and we’ll help you sort it out.</p>
+<p>Having trouble with Knockout-restfull? Contact <a mail="saitodisse@gmail.com">saitodisse@gmail.com</a> and we’ll help you sort it out.</p>
       </section>
     </div>
 
