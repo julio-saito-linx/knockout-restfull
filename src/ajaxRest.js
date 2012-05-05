@@ -1,10 +1,10 @@
 ﻿// like an enum
 var METHOD = {
-    LIST: { type: "GET", url: "../api/__controller__"},
-    SHOW: { type: "GET", url: "../api/__controller__/__id__"},
-    PUT: { type: "PUT", url: "../api/__controller__/__id__"},
-    POST: { type: "POST", url: "../api/__controller__"},
-    DELETE: { type: "DELETE", url: "../api/__controller__/__id__"}
+    LIST: { type: "GET", url: "__webSite__/__controller__"},
+    SHOW: { type: "GET", url: "__webSite__/__controller__/__id__"},
+    PUT: { type: "PUT", url: "__webSite__/__controller__/__id__"},
+    POST: { type: "POST", url: "__webSite__/__controller__"},
+    DELETE: { type: "DELETE", url: "__webSite__/__controller__/__id__"}
 };
 
 var ajaxRest = function (options) {
@@ -18,14 +18,16 @@ var ajaxRest = function (options) {
     self.settings.controllerName = options.controllerName || "";
     self.settings.method = options.method || METHOD.LIST;
     self.settings.id = options.id || undefined;
+    self.settings.webSite = options.webSite || undefined;
     self.settings.data = options.data || undefined;
     self.settings.callback_done = options.callback_done || undefined;
     self.settings.callback_error = options.callback_error || undefined;
 
     self.callAjax = function () {
         // prepara URL
-        var uri;
-        uri = self.settings.method.url.replace(/__controller__/, self.settings.controllerName);
+        var uri = self.settings.method.url;
+        uri = uri.replace(/__controller__/, self.settings.controllerName);
+        uri = uri.replace(/__webSite__/, self.settings.webSite);
         if (!_.isUndefined(self.settings.id)) {
             uri = uri.replace(/__id__/, self.settings.id);
         }
