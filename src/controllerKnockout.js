@@ -8,6 +8,7 @@
 var knockoutControllerInit = function (config) {
     var controller = {};
     controller.controllerName = config.controllerName;
+    controller.webSite = config.webSite;
     controller.viewModelClass = config.viewModelClass;
     controller.dtoData = undefined;
 
@@ -16,7 +17,7 @@ var knockoutControllerInit = function (config) {
     // ///////////////////////////////////////////////////
     // CALL BACKS
     // ///////////////////////////////////////////////////
-    controller.ajax_done = config.ajax_done;
+    controller.ajax_get_list = config.ajax_get_list;
     controller.ajax_save = config.ajax_save;
     controller.ajax_delete = config.ajax_delete;
     controller.ajax_error = config.ajax_error;
@@ -74,15 +75,13 @@ var knockoutControllerInit = function (config) {
         }
 
         callAjax({
+            webSite: controller.webSite,
             controllerName: controller.controllerName,
             method: metodoHttp,
             id: vmKO.selected().Id(),
             data: serializedVm,
             callback_done: function (data) {
                 vmKO.updating(false);
-                if (!_.isUndefined(controller.ajax_done)) {
-                    controller.ajax_done(data);
-                }
                 if (!_.isUndefined(controller.ajax_save)) {
                     controller.ajax_save(data);
                 }
@@ -105,6 +104,7 @@ var knockoutControllerInit = function (config) {
         vmKO.updating(true);
 
         callAjax({
+            webSite: controller.webSite,
             controllerName: controller.controllerName,
             method: METHOD.DELETE,
             id: vmKO.selected().Id(),
@@ -127,9 +127,6 @@ var knockoutControllerInit = function (config) {
                 var indexToSelect = (currentIndex <= lastItem) ? currentIndex : lastItem;
         		vmKO.select(vmKO.list()[indexToSelect]);
 
-        		if (!_.isUndefined(controller.ajax_done)) {
-        		    controller.ajax_done(data);
-                }
                 if (!_.isUndefined(controller.ajax_delete)) {
                     controller.ajax_delete(data);
                 }
@@ -152,12 +149,13 @@ var knockoutControllerInit = function (config) {
     }
     else {
         callAjax({
+            webSite: controller.webSite,
             controllerName: controller.controllerName,
             callback_done: function (data) {
                 controller.dtoData = data;
                 loadDtoData(controller);
-                if (!_.isUndefined(controller.ajax_done)) {
-                    controller.ajax_done(data);
+                if (!_.isUndefined(controller.ajax_get_list)) {
+                    controller.ajax_get_list(data);
                 }
             },
             callback_error: function (jqXHR) {
