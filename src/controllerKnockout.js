@@ -89,6 +89,7 @@ var knockoutControllerInit = function (config) {
                 if(metodoHttp === METHOD.POST){
                 	vmKO.selected().Id(data);
                 }
+              vmKO.jsonItem = ko.toJSON(vmKO.selected);
             },
             callback_error: function (jqXHR) {
                 vmKO.updating(false);
