@@ -1,94 +1,106 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head runat="server">
-        <title>Ingredients</title>
-        <link href="Ingredients.css" rel="stylesheet" type="text/css" />
-    <body>
-        <div class="bloco">
-            <div class="subTitulo">
-                Ingredients list
-                <div id="divImagemAjax">
-                    <span data-bind="visible : ingredientVm.updating">updating</span>
-                </div>
-            </div>
-            <div class="divContent">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                Id
-                            </th>
-                            <th>
-                                Name
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody data-bind="foreach : ingredientVm.list">
-                        <tr data-bind="css: {linhaSelecionada : Id === $root.ingredientVm.selected().Id }, click: $root.ingredientVm.select">
-                            <td data-bind="text:Id" ></td>
-                            <td data-bind="text:Name" ></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button data-bind="click : ingredientVm.create">
-                    New</button>
-                <button data-bind="click : ingredientVm.exclude">
-                    Delete</button>
-                <button data-bind="click : ingredientVm.save">
-                    Save</button>
-            </div>
-            <button id="buttonShowDebugInfo">Show Debug Info</button>
+<head runat="server">
+    <title>Ingredients</title>
+    <link href="../../dev-external-libs/bootstrap-responsive.css" rel="stylesheet" type="text/css"/>
+    <link href="../../dev-external-libs/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link href="Ingredients.css" rel="stylesheet" type="text/css"/>
+<body>
+<div class="row">
+    <div class="span4">
+        <h3>
+            Ingredients list</h3>
+
+        <div id="divImagemAjax">
+            <span data-bind="visible : ingredientVm.updating">updating</span>
         </div>
-        <div class="bloco">
-            <div class="subTitulo">
-                Detail
+        <table class="table table-bordered table-selection">
+            <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+            </tr>
+            </thead>
+            <tbody data-bind="foreach : ingredientVm.list">
+            <tr data-bind="css: {linhaSelecionada : Id === $root.ingredientVm.selected().Id }, click: $root.ingredientVm.select">
+                <td data-bind="text:Id">
+                </td>
+                <td data-bind="text:Name">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.create" value="New"/></p>
+        <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.exclude" value="Delete"/></p>
+        <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.save" value="Save"/></p>
+        <p><input type="button" class="btn btn-small" id="buttonShowDebugInfo" value="Show Debug Info"/></p>
+    </div>
+    <div class="span4">
+        <h3>
+            Detail
+        </h3>
+
+        <div class="well" data-bind="with : ingredientVm.selected">
+            <div>
+                <label>
+                    Id
+                </label>
+
+                <p>
+                    <span data-bind="text : Id"></span>
+                </p>
             </div>
-            <div class="divContent" data-bind="with : ingredientVm.selected">
+            <div>
+                <label>
+                    Name
+                </label>
+
+                <p>
+                    <input data-bind="value : Name"/>
+                </p>
+            </div>
+        </div>
+        <div>
+            <div id="divLog">
+                <h4>
+                    ajax log</h4>
+
                 <div>
-                    <div class="campo">
-                        Id
-                    </div>
-                    <div class="dado">
-                        <span data-bind="text : Id"></span>
-                    </div>
-                </div>
-                <div>
-                    <div class="campo">
-                        Name
-                    </div>
-                    <div class="dado">
-                        <input data-bind="value : Name" />
-                    </div>
+                    <pre id="preLog"></pre>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="span4">
         <div id="divDebug">
-            <h3>
-                knockout $data</h3>
-            <div class="itemDebug">
+            <h4>
+                knockout $data</h4>
+
+            <div>
                 <pre data-bind="text: JSON.stringify(ko.toJS($data), null, 2)" id="preDebug"></pre>
             </div>
         </div>
-        <div id="divLog">
-            <h3>
-                ajax log</h3>
-            <div class="itemLog">
-                <pre id="preLog"></pre>
-            </div>
-        </div>
-    </body>
+    </div>
+</div>
+</body>
 
 
-    <script src="../../dev-external-libs/jquery-1.7.1.js" type="text/javascript"></script>
-    <script src="../../dev-external-libs/json2.js" type="text/javascript"></script>
-    <script src="../../dev-external-libs/knockout.2.0.0.debug.js" type="text/javascript"></script>
-    <script src="../../dev-external-libs/underscore.js 1.3.3.js" type="text/javascript"></script>
+<script src="../../dev-external-libs/jquery-1.7.1.js" type="text/javascript"></script>
+<script src="../../dev-external-libs/json2.js" type="text/javascript"></script>
+<script src="../../dev-external-libs/knockout.2.0.0.debug.js" type="text/javascript"></script>
+<script src="../../dev-external-libs/underscore.js 1.3.3.js" type="text/javascript"></script>
+<script src="../../dev-external-libs/bootstrap.js" type="text/javascript"></script>
 
-    <script src="../../src/ajaxRest.js" type="text/javascript"></script>
-    <script src="../../src/controllerKnockout.js" type="text/javascript"></script>
+<script src="../../src/ajaxRest.js" type="text/javascript"></script>
+<script src="../../src/controllerKnockout.js" type="text/javascript"></script>
 
-    <script src="js/IngredientVM.js" type="text/javascript"></script>
-    <script src="js/repoAjax.mock.js" type="text/javascript"></script>
+<script src="js/IngredientVM.js" type="text/javascript"></script>
+<script src="js/repoAjax.mock.js" type="text/javascript"></script>
 
-    <script src="Ingredients.js" type="text/javascript"> </script>
+<script src="js/Ingredients.js" type="text/javascript"></script>
 </html>
