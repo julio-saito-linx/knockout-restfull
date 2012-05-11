@@ -53,6 +53,21 @@
             </tr>
             </tbody>
         </table>
+        <div class="well" data-bind="with : ingredientVm.selected">
+            <div>
+                <p><i>selected:</i></p>
+                <p>
+                    <span data-bind="text : Id"></span> - <input data-bind="value : Name"/>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        <h3>
+            Buttons
+        </h3>
+        <br>
+
         <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.create" value="New"/></p>
 
         <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.exclude" value="Delete"/></p>
@@ -60,32 +75,6 @@
         <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.save" value="Save"/></p>
 
         <p><input type="button" class="btn btn-small" id="buttonShowDebugInfo" value="Show Debug Info"/></p>
-    </div>
-    <div class="span4">
-        <h3>
-            Detail
-        </h3>
-
-        <div class="well" data-bind="with : ingredientVm.selected">
-            <div>
-                <label>
-                    Id
-                </label>
-
-                <p>
-                    <span data-bind="text : Id"></span>
-                </p>
-            </div>
-            <div>
-                <label>
-                    Name
-                </label>
-
-                <p>
-                    <input data-bind="value : Name"/>
-                </p>
-            </div>
-        </div>
         <div>
             <div id="divLog">
                 <h4>
