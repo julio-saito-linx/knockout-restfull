@@ -8,6 +8,23 @@
     <link href="Ingredients.css" rel="stylesheet" type="text/css"/>
 <body>
 <div class="row">
+    <div class="span12">
+        <h2>knockout-restfull</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="span12">
+        <p>This is <a href="https://github.com/saitodisse/knockout-restfull">knockout-restfull</a> sample. All
+            communication with server are mocked. See <a href="http://knockoutjs.com/">knockout.js</a>.</p>
+        <br>
+    </div>
+</div>
+<!--
+
+
+
+-->
+<div class="row">
     <div class="span4">
         <h3>
             Ingredients list</h3>
@@ -36,8 +53,11 @@
             </tbody>
         </table>
         <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.create" value="New"/></p>
+
         <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.exclude" value="Delete"/></p>
+
         <p><input type="button" class="btn btn-small" data-bind="click : ingredientVm.save" value="Save"/></p>
+
         <p><input type="button" class="btn btn-small" id="buttonShowDebugInfo" value="Show Debug Info"/></p>
     </div>
     <div class="span4">
