@@ -94,7 +94,7 @@ $(document).ready(function () {
             callback_error: { objeto: 2 }
         };
 
-        var ajax_config = new ajaxRest(options);
+        var ajax_config = ajaxRest(options);
 
         equal(ajax_config.settings.controllerName, options.controllerName, "controllerName");
         equal(ajax_config.settings.method, options.method, "method");
@@ -108,7 +108,7 @@ $(document).ready(function () {
             controllerName: "pizza2"
         };
 
-        var ajax_config = new ajaxRest(options);
+        var ajax_config = ajaxRest(options);
 
         equal(ajax_config.settings.controllerName, options.controllerName, "controllerName");
         equal(ajax_config.settings.method, METHOD.LIST, "method");

@@ -7,7 +7,7 @@
     return self;
 };
 
-var dados = [
+var ingredientsJSON = [
                 {
                     "Id": 1,
                     "Name": "onion"
@@ -38,7 +38,7 @@ var callAjax = function (options) {
             && options.controllerName == "ingredient"
             && (options.method === METHOD.LIST || _.isUndefined(options.method))) {
 
-        options.callback_done(dados);
+        options.callback_done(ingredientsJSON);
     }
     // PUT
     if (!_.isUndefined(options.callback_done)

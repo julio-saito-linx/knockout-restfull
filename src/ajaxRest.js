@@ -8,7 +8,7 @@ var METHOD = {
 };
 
 var ajaxRest = function (options) {
-    var self = this;
+    var self = {};
 
     // Force options to be an object
     options = options || {};
@@ -56,6 +56,8 @@ var ajaxRest = function (options) {
             }
         });
     };
+
+    return self;
 };
 
 
